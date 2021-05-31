@@ -77,7 +77,8 @@ def spec_dist(a,b, size):
 
     Returns
     -------
-    dist : Manhattan distance between a and b (Float64)
+    dist : Manhattan distance between a and b (Float64) normalized to
+           size
    
     Example
     -------

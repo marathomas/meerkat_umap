@@ -23,6 +23,31 @@ import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
 
+
+# 2D plot
+def umap_2Dplot(x,y, scat_labels, mycolors, outname=None):
+    
+    labeltypes = sorted(list(set(scat_labels)))
+    pal = sns.color_palette(mycolors, n_colors=len(labeltypes))
+    color_dict = dict(zip(labeltypes, pal))
+    c = [color_dict[val] for val in scat_labels]
+    
+    fig = plt.figure(figsize=(6,6))
+    
+    plt.scatter(x, y, alpha=1,
+                s=10, c=c)
+    plt.xlabel('UMAP1')
+    plt.ylabel('UMAP2');
+
+    scatters = []
+    for label in labeltypes:
+        scatters.append(matplotlib.lines.Line2D([0],[0], linestyle="none", c=color_dict[label], marker = 'o'))
+    plt.legend(scatters, labeltypes, numpoints = 1)
+    if outname:
+        plt.savefig(outname)
+
+
+
 def mara_3Dplot(x,y,z,scat_labels, mycolors,outname=None):
     
     labeltypes = sorted(list(set(scat_labels)))

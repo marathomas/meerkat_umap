@@ -77,7 +77,8 @@ def spec_dist(a,b, size):
 
     Returns
     -------
-    dist : Manhattan distance between a and b (Float64)
+    dist : Manhattan distance between a and b (Float64) normalized to
+           size
    
     Example
     -------
@@ -109,7 +110,7 @@ def calc_pairwise_pad(a, b):
     Returns
     -------
     dist : numeric (float64)
-           distance between spectrograms a,b
+           size-normalized Manhattan distance between spectrograms a,b
     
     Example
     -------
@@ -159,7 +160,7 @@ def calc_overlap_only(a,b):
     Returns
     -------
     dist : numeric (float64)
-           distance between spectrograms a,b
+           size-normalized Manhattan distance between spectrograms a,b
     
     Example
     -------
@@ -199,7 +200,7 @@ def calc_timeshift(a,b):
     Returns
     -------
     dist : numeric (float64)
-           distance between spectrograms a,b
+           size-normalized Manhattan distance between spectrograms a,b
     
     Example
     -------
