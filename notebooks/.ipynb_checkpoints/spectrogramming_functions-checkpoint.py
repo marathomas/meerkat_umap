@@ -13,7 +13,7 @@ Collection of spectrogramming functions
 @author: marathomas
 """
 import librosa
-
+import numpy as np
 
 def generate_mel_spectrogram(data, rate, n_mels, window, fft_win , fft_hop, fmax):
     

@@ -19,6 +19,10 @@ from numba import jit
 
 MIN_OVERLAP = 0.9
 
+def test_new():
+    print("rrfr")
+    return 0
+
 @numba.njit()
 def unpack_specs(a,b):
     """
@@ -86,10 +90,9 @@ def spec_dist(a,b, size):
 
     """
 
-    dist = (np.sum(np.abs(np.subtract(a, b)))) / size # manhattan
-    
+    #dist = (np.sum(np.abs(np.subtract(a, b)))) / size # manhattan
     #dist = (np.sum(np.subtract(a, b)*np.subtract(a, b))) / size # mean squared error
-    #dist = np.sqrt((np.sum(np.subtract(a, b)*np.subtract(a, b))) / size)
+    dist = np.sqrt((np.sum(np.subtract(a, b)*np.subtract(a, b)))) / (np.sqrt(size)) # some time of normalized euclidean
     return dist
     
 
