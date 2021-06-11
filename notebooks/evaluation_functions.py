@@ -423,6 +423,8 @@ class sil:
     def get_sample_scores(self):
         return self.sample_SIL
 
+    
+
 import sklearn
 from sklearn.metrics.pairwise import euclidean_distances  
 

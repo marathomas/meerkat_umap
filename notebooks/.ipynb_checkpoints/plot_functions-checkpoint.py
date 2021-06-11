@@ -25,7 +25,7 @@ import plotly.graph_objects as go
 
 
 # 2D plot
-def umap_2Dplot(x,y, scat_labels, mycolors, outname=None):
+def umap_2Dplot(x,y, scat_labels, mycolors, outname=None, showlegend=True):
     
     labeltypes = sorted(list(set(scat_labels)))
     pal = sns.color_palette(mycolors, n_colors=len(labeltypes))
@@ -42,13 +42,13 @@ def umap_2Dplot(x,y, scat_labels, mycolors, outname=None):
     scatters = []
     for label in labeltypes:
         scatters.append(matplotlib.lines.Line2D([0],[0], linestyle="none", c=color_dict[label], marker = 'o'))
-    plt.legend(scatters, labeltypes, numpoints = 1)
-    if outname:
-        plt.savefig(outname)
+    
+    if showlegend: plt.legend(scatters, labeltypes, numpoints = 1) 
+    if outname: plt.savefig(outname)
 
 
 
-def mara_3Dplot(x,y,z,scat_labels, mycolors,outname=None):
+def mara_3Dplot(x,y,z,scat_labels, mycolors,outname=None, showlegend=True):
     
     labeltypes = sorted(list(set(scat_labels)))
     pal = sns.color_palette(mycolors, n_colors=len(labeltypes))
@@ -72,13 +72,16 @@ def mara_3Dplot(x,y,z,scat_labels, mycolors,outname=None):
     ax.set_ylabel('UMAP2')
     ax.set_zlabel('UMAP3')
 
-    scatters = []
-    for label in labeltypes:
-        scatters.append(matplotlib.lines.Line2D([0],[0], linestyle="none", c=color_dict[label], marker = 'o'))
 
-    ax.legend(scatters, labeltypes, numpoints = 1)
-    if outname:
-        plt.savefig(outname)
+
+    if showlegend: 
+        scatters = []
+        for label in labeltypes:
+            scatters.append(matplotlib.lines.Line2D([0],[0], linestyle="none", c=color_dict[label], marker = 'o'))
+        
+        ax.legend(scatters, labeltypes, numpoints = 1)
+    
+    if outname: plt.savefig(outname)
 
 # Example use:
 #mara_3Dplot(df['UMAP1'], df['UMAP2'], df['UMAP3'],df.label, "Set2", "myplot.jpg")
