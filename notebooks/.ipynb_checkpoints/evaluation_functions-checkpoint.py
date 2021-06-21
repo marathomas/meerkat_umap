@@ -19,7 +19,10 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.metrics import silhouette_samples, silhouette_score
 import seaborn as sns
 import matplotlib.pyplot as plt
-
+import networkx as nx
+import string
+import pygraphviz
+from scipy.spatial.distance import pdist, squareform
 
 def make_nn_stats_dict(calltypes, labels, nb_indices):
     """
@@ -286,6 +289,9 @@ class nn:
         
     plot_heat_S(center, cmap, cbar, outname)
         plots heatmap of fold likelihood (statstabnorm scores to the power of 2)
+        
+    draw_simgraph(outname)
+        draws similarity graph based on statstabnorm scores
     
     """
     def __init__(self, embedding, labels, k):
@@ -337,7 +343,7 @@ class nn:
         ax=sns.heatmap(self.statstab, annot=True, vmin=vmin, vmax=vmax, center=center, cmap=cmap, cbar=cbar)
         plt.xlabel("neighbor label")
         plt.ylabel("datapoint label")
-        plt.title("Nearest Neighbor Frequency S")
+        plt.title("Nearest Neighbor Frequency P")
         if outname:
             plt.savefig(outname)
 
@@ -346,7 +352,7 @@ class nn:
         ax=sns.heatmap(self.statstabnorm, annot=True, vmin=vmin, vmax=vmax, center=center, cmap=cmap, cbar=cbar)
         plt.xlabel("neighbor label")
         plt.ylabel("datapoint label")
-        plt.title("Normalized Nearest Neighbor Frequency Snorm")
+        plt.title("Normalized Nearest Neighbor Frequency Pnorm")
         if outname:
             plt.savefig(outname)
     
@@ -357,7 +363,40 @@ class nn:
         plt.ylabel("datapoint label")
         plt.title("Nearest Neighbor fold likelihood")
         if outname:
-            plt.savefig(outname) 
+            plt.savefig(outname)
+            
+    def draw_simgraph(self, outname="simgraph.png"):        
+        calltypes = sorted(list(set(self.labels)))
+        sim_mat = np.asarray(self.statstabnorm).copy()
+        for i in range(sim_mat.shape[0]):
+            for j in range(i,sim_mat.shape[0]):
+                if i!=j:
+                    sim_mat[i,j] = np.mean((sim_mat[i,j], sim_mat[j,i]))
+                    sim_mat[j,i] = sim_mat[i,j]
+                else:
+                    sim_mat[i,j] = 0
+                    
+        dist_mat = sim_mat*(-1)
+        dist_mat = np.interp(dist_mat, (dist_mat.min(), dist_mat.max()), (1, 10))
+        
+        for i in range(dist_mat.shape[0]):
+            dist_mat[i,i] = 0
+            
+        dt = [('len', float)]
+        
+        A = dist_mat
+        A = A.view(dt)
+
+        G = nx.from_numpy_matrix(A)
+        G = nx.relabel_nodes(G, dict(zip(range(len(G.nodes())),calltypes))) 
+
+        G = nx.drawing.nx_agraph.to_agraph(G)
+
+        G.node_attr.update(color="#bec1d4", style="filled", shape='circle', fontsize='20')
+        G.edge_attr.update(color="blue", width="2.0")
+        print("Graph saved at ", outname)
+        G.draw(outname, format='png', prog='neato')
+
     
     
 class sil:
@@ -422,6 +461,107 @@ class sil:
     
     def get_sample_scores(self):
         return self.sample_SIL
+    
+    def plot_sil(self, mypalette="Set2", embedding_type=None, outname=None):
+        labeltypes = sorted(list(set(self.labels)))
+        n_clusters = len(labeltypes)
+
+        # Create a subplot with 1 row and 2 columns
+        fig, ax1 = plt.subplots(1, 1)
+        fig.set_size_inches(9, 7)
+        ax1.set_xlim([-1, 1])
+        ax1.set_ylim([0, self.embedding.shape[0] + (n_clusters + 1) * 10])
+        y_lower = 10
+        
+        pal = sns.color_palette(mypalette, n_colors=len(labeltypes))
+        color_dict = dict(zip(labeltypes, pal))
+        
+        labeltypes = sorted(labeltypes, reverse=True)
+
+
+        for i, cluster_label in enumerate(labeltypes):
+            ith_cluster_silhouette_values = self.sample_SIL[self.labels == cluster_label]
+            ith_cluster_silhouette_values.sort()
+
+            size_cluster_i = ith_cluster_silhouette_values.shape[0]
+            y_upper = y_lower + size_cluster_i
+
+            ax1.fill_betweenx(np.arange(y_lower, y_upper),
+                            0, ith_cluster_silhouette_values,
+                            facecolor=color_dict[cluster_label], edgecolor=color_dict[cluster_label], alpha=0.7)
+
+            ax1.text(-0.05, y_lower + 0.5 * size_cluster_i, cluster_label)
+
+            # Compute the new y_lower for next plot
+            y_lower = y_upper + 10  # 10 for the 0 samples
+        
+        if embedding_type:
+            mytitle = "Silhouette plot for "+embedding_type+" labels"
+        else:
+            mytitle = "Silhouette plot"
+
+        ax1.set_title(mytitle)
+        ax1.set_xlabel("Silhouette value")
+        ax1.set_ylabel("Cluster label")
+
+        # The vertical line for average silhouette score of all the values
+        ax1.axvline(x=self.avrg_SIL, color="red", linestyle="--")
+        
+        if outname:
+            plt.savefig(outname, facecolor="white")
+
+
+            
+            
+def plot_within_without(embedding,labels, distance_metric = "euclidean", outname=None,xmin=0, xmax=12,nbins=50):
+    
+    distmat_embedded = squareform(pdist(embedding, metric=distance_metric))
+    labels = np.asarray(labels)
+    calltypes = sorted(list(set(labels)))
+
+    self_dists={}
+    other_dists={}
+
+    for calltype in calltypes:
+        x=distmat_embedded[np.where(labels==calltype)]
+        x = np.transpose(x)  
+        y = x[np.where(labels==calltype)]
+
+        self_dists[calltype] = y[np.triu_indices(n=y.shape[0], m=y.shape[1],k = 1)]
+        y = x[np.where(labels!=calltype)]
+        other_dists[calltype] = y[np.triu_indices(n=y.shape[0], m=y.shape[1], k = 1)]
+    
+    plt.figure(figsize=(8, 8))
+    i=1
+
+    for calltype in calltypes:
+
+        plt.subplot(4, 2, i)
+        n, bins, patches = plt.hist(x=self_dists[calltype], label="within", density=True,
+                                  bins=np.linspace(xmin, xmax, nbins), color='green',
+                                  alpha=0.5, rwidth=0.85)
+
+        plt.vlines(x=np.mean(self_dists[calltype]),ymin=0,ymax=0.5,color='green', linestyles='dotted')
+
+        n, bins, patches = plt.hist(x=other_dists[calltype], label="outside", density=True,
+                                  bins=np.linspace(xmin, xmax, nbins), color='red',
+                                  alpha=0.5, rwidth=0.85)
+
+        plt.vlines(x=np.mean(other_dists[calltype]),ymin=0,ymax=0.5,color='red', linestyles='dotted')
+        plt.legend()
+        plt.grid(axis='y', alpha=0.75)
+        plt.title(calltype)
+        plt.xlim(xmin,xmax)
+        plt.ylim(0, 0.5)
+        if i==len(calltypes):      
+            plt.ylabel('Density')
+            plt.xlabel('Euclidean distance')
+
+        i=i+1
+
+    plt.tight_layout()
+    plt.savefig(outname, facecolor="white")
+    
 
 import sklearn
 from sklearn.metrics.pairwise import euclidean_distances  

@@ -62,7 +62,7 @@ def generate_mel_spectrogram(data, rate, n_mels, window, fft_win , fft_hop, fmax
     return spectro
 
 
-def generate_stretched_mel_spectrogram(data, sr, duration, n_mels, window, fft_win , fft_hop):
+def generate_stretched_mel_spectrogram(data, sr, duration, n_mels, window, fft_win , fft_hop, MAX_DURATION):
     """
     Function that generates stretched mel spectrogram from audio data using librosa functions
 

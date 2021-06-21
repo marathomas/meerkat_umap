@@ -71,6 +71,14 @@ def mara_3Dplot(x,y,z,scat_labels, mycolors,outname=None, showlegend=True):
     ax.set_xlabel('UMAP1')
     ax.set_ylabel('UMAP2')
     ax.set_zlabel('UMAP3')
+    
+    ax.xaxis.pane.fill = False
+    ax.yaxis.pane.fill = False
+    ax.zaxis.pane.fill = False
+    
+    ax.xaxis.pane.set_edgecolor('w')
+    ax.yaxis.pane.set_edgecolor('w')
+    ax.zaxis.pane.set_edgecolor('w')
 
 
 
