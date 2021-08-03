@@ -19,10 +19,6 @@ from numba import jit
 
 MIN_OVERLAP = 0.9
 
-def test_new():
-    print("rrfr")
-    return 0
-
 @numba.njit()
 def unpack_specs(a,b):
     """
@@ -77,7 +73,7 @@ def spec_dist(a,b, size):
           spectrograms S(X,Y) with X frequency bins and 
           Y timeframes
     size: Number of "pixels" in each spec (Integer)
-          (a.shape[0]*b.shape[1])
+          (a.shape[0]*b.shape[1])##
 
     Returns
     -------
@@ -86,10 +82,9 @@ def spec_dist(a,b, size):
    
     Example
     -------
-    >>> 
+    >>> ##
 
     """
-
     #dist = (np.sum(np.abs(np.subtract(a, b)))) / size # manhattan
     #dist = (np.sum(np.subtract(a, b)*np.subtract(a, b))) / size # mean squared error
     dist = np.sqrt((np.sum(np.subtract(a, b)*np.subtract(a, b)))) / (np.sqrt(size)) # some time of normalized euclidean
@@ -223,7 +218,7 @@ def calc_timeshift(a,b):
     
     n_of_calculations = (max_timeline+1-start_timeline)+(max_timeline+1-start_timeline)
 
-    distances = np.full((n_of_calculations),3.)
+    distances = np.full((n_of_calculations),999.)
 
     count=0
     
@@ -265,8 +260,7 @@ def calc_timeshift(a,b):
 
         count = count + 1
     
-    min_dist = np.min(distances)
-                                                     
+    min_dist = np.min(distances)                                              
     return min_dist
 
 

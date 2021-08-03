@@ -44,7 +44,7 @@ def umap_2Dplot(x,y, scat_labels, mycolors, outname=None, showlegend=True):
         scatters.append(matplotlib.lines.Line2D([0],[0], linestyle="none", c=color_dict[label], marker = 'o'))
     
     if showlegend: plt.legend(scatters, labeltypes, numpoints = 1) 
-    if outname: plt.savefig(outname)
+    if outname: plt.savefig(outname, facecolor="white")
 
 
 
@@ -89,7 +89,7 @@ def mara_3Dplot(x,y,z,scat_labels, mycolors,outname=None, showlegend=True):
         
         ax.legend(scatters, labeltypes, numpoints = 1)
     
-    if outname: plt.savefig(outname)
+    if outname: plt.savefig(outname, facecolor="white")
 
 # Example use:
 #mara_3Dplot(df['UMAP1'], df['UMAP2'], df['UMAP3'],df.label, "Set2", "myplot.jpg")

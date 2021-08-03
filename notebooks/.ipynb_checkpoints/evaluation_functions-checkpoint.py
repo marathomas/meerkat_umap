@@ -247,6 +247,11 @@ class nn:
         (1D numpy array). What percentage of datapoints (of this class)
         have fully consistent k neighbors (all k are also of the same class)
     
+    def knn_accuracy(self):
+        returns k nearest neighbor classifier accuracy for each class
+        (1D numpy array). What percentage of datapoints (of this class)
+        have a majority of same-class neighbors among k nearest neighbors
+    
     get_statstab():
         returns statstab
     
@@ -314,11 +319,25 @@ class nn:
         label_types = sorted(list(set(self.labels)))        
         consistent = []
         for i,labeltype in enumerate(label_types):
-            statstab = self.nn_stats_dict[labeltype] 
-            x = statstab[:,i]
-            cc = (np.count_nonzero(x == self.k) / statstab.shape[0])*100
+            statsd = self.nn_stats_dict[labeltype] 
+            x = statsd[:,i]
+            cc = (np.sum(x == self.k) / statsd.shape[0])*100
             consistent.append(cc)
         return np.asarray(consistent)
+    
+    def knn_accuracy(self):
+        label_types = sorted(list(set(self.labels)))        
+        has_majority = []
+        if (self.k % 2) == 0:
+            n_majority = (self.k/2)+ 1
+        else:
+            n_majority = (self.k/2)+ 0.5
+        for i,labeltype in enumerate(label_types):
+            statsd = self.nn_stats_dict[labeltype] 
+            x = statsd[:,i]
+            cc = (np.sum(x >= n_majority) / statsd.shape[0])*100  
+            has_majority.append(cc)
+        return np.asarray(has_majority)  
           
     def get_statstab(self):
         return self.statstab
@@ -345,7 +364,7 @@ class nn:
         plt.ylabel("datapoint label")
         plt.title("Nearest Neighbor Frequency P")
         if outname:
-            plt.savefig(outname)
+            plt.savefig(outname, facecolor="white")
 
     def plot_heat_Snorm(self,vmin=-13, vmax=13, center=1, cmap='YlOrRd', cbar=None, outname=None):
         plt.figure(figsize=(6,6))
@@ -354,7 +373,7 @@ class nn:
         plt.ylabel("datapoint label")
         plt.title("Normalized Nearest Neighbor Frequency Pnorm")
         if outname:
-            plt.savefig(outname)
+            plt.savefig(outname, facecolor="white")
     
     def plot_heat_fold(self, center=1, cmap='YlOrRd', cbar=None, outname=None):
         plt.figure(figsize=(6,6))
@@ -363,7 +382,7 @@ class nn:
         plt.ylabel("datapoint label")
         plt.title("Nearest Neighbor fold likelihood")
         if outname:
-            plt.savefig(outname)
+            plt.savefig(outname, facecolor="white")
             
     def draw_simgraph(self, outname="simgraph.png"):        
         calltypes = sorted(list(set(self.labels)))

@@ -118,6 +118,22 @@ def generate_stretched_mel_spectrogram(data, sr, duration, n_mels, window, fft_w
 
     return s
 
+def generate_stretched_spectrogram(data, sr, duration, window, fft_win, fft_hop, MAX_DURATION):
+    n_fft = int(fft_win * sr)
+    hop_length = int(fft_hop * sr)
+    stretch_rate = duration/MAX_DURATION
+    
+    D = librosa.stft(y=data,
+                     n_fft = n_fft,
+                     hop_length = hop_length, 
+                     window = window,
+                     win_length = n_fft)
+    
+    D_stretched = librosa.core.phase_vocoder(D, stretch_rate, hop_length=hop_length)
+    D_stretched = np.abs(D_stretched)**2
+    
+    return D_stretched
+
 
 def generate_freq_spectrogram(data, sr, window, fft_win , fft_hop):
     """
@@ -177,3 +193,15 @@ def generate_ampli_spectrogram(data, rate, window, fft_win , fft_hop):
     #power_to_db(np.abs(D)**2)
 
     return np.abs(s)
+
+
+def generate_spectrogram(data, rate, window, fft_win, fft_hop):
+    n_fft = int(fft_win * rate)
+    hop_length = int(fft_hop * rate)
+    
+    s = librosa.stft(y=data,
+                    n_fft = n_fft,
+                    hop_length = hop_length,
+                    window = window,
+                    win_length = n_fft)
+    return np.abs(s)**2

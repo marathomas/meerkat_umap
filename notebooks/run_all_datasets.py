@@ -31,7 +31,7 @@ DATA = os.path.join(os.path.sep, str(Path(wd).parents[0]), "data", "processed")
 FIGURES = os.path.join(os.path.sep, str(Path(wd).parents[0]), "reports", "figures")
 
 LOAD_EXISTING = True
-PLOTTING = False
+PLOTTING = True
 
 for embedding_id in ['full', 'reduced', 'balanced', 'reducedrandom']:
     

@@ -206,9 +206,6 @@ def pad_transform_spectro(spec,maxlen):
     >>> 
 
     """       
-    n_bins = spec.shape[0]
-    maxlen = maxlen * n_bins + 2
-    
     flat_spec = spec.flatten()
     trans_spec = np.concatenate((np.asarray([spec.shape[0], spec.shape[1]]), flat_spec, np.asarray([999]*(maxlen-flat_spec.shape[0]-2))))
     trans_spec = np.float64(trans_spec)
