@@ -359,7 +359,7 @@ class nn:
     
     def plot_heat_S(self,vmin=0, vmax=100, center=50, cmap='YlOrRd', cbar=None, outname=None):
         plt.figure(figsize=(6,6))
-        ax=sns.heatmap(self.statstab, annot=True, vmin=vmin, vmax=vmax, center=center, cmap=cmap, cbar=cbar)
+        ax=sns.heatmap(self.statstab, annot=True, vmin=vmin, vmax=vmax, center=center, cmap=cmap, cbar=cbar, annot_kws={"size":14})
         plt.xlabel("neighbor label")
         plt.ylabel("datapoint label")
         plt.title("Nearest Neighbor Frequency P")
@@ -368,7 +368,7 @@ class nn:
 
     def plot_heat_Snorm(self,vmin=-13, vmax=13, center=1, cmap='YlOrRd', cbar=None, outname=None):
         plt.figure(figsize=(6,6))
-        ax=sns.heatmap(self.statstabnorm, annot=True, vmin=vmin, vmax=vmax, center=center, cmap=cmap, cbar=cbar)
+        ax=sns.heatmap(self.statstabnorm, annot=True, vmin=vmin, vmax=vmax, center=center, cmap=cmap, cbar=cbar, annot_kws={"size":14})
         plt.xlabel("neighbor label")
         plt.ylabel("datapoint label")
         plt.title("Normalized Nearest Neighbor Frequency Pnorm")
@@ -377,7 +377,7 @@ class nn:
     
     def plot_heat_fold(self, center=1, cmap='YlOrRd', cbar=None, outname=None):
         plt.figure(figsize=(6,6))
-        ax=sns.heatmap(np.power(2,self.statstabnorm), annot=True, center=center, cmap=cmap, cbar=cbar)
+        ax=sns.heatmap(np.power(2,self.statstabnorm), annot=True, center=center, cmap=cmap, cbar=cbar, annot_kws={"size":14})
         plt.xlabel("neighbor label")
         plt.ylabel("datapoint label")
         plt.title("Nearest Neighbor fold likelihood")
@@ -415,6 +415,7 @@ class nn:
         G.edge_attr.update(color="blue", width="2.0")
         print("Graph saved at ", outname)
         G.draw(outname, format='png', prog='neato')
+        return G
 
     
     
@@ -579,7 +580,8 @@ def plot_within_without(embedding,labels, distance_metric = "euclidean", outname
         i=i+1
 
     plt.tight_layout()
-    plt.savefig(outname, facecolor="white")
+    if outname:
+        plt.savefig(outname, facecolor="white")
     
 
 import sklearn

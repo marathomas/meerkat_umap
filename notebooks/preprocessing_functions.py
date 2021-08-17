@@ -17,8 +17,6 @@ import numpy as np
 import numba
 from numba import jit
 
-MEL_BINS_REMOVED_LOWER = 5
-MEL_BINS_REMOVED_UPPER = 5
 
 
 @jit(nopython=True)
