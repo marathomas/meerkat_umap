@@ -19,9 +19,6 @@ from numba import jit
 
 MIN_OVERLAP = 0.9
 
-def test_new():
-    print("rrfr")
-    return 0
 
 @numba.njit()
 def unpack_specs(a,b):
