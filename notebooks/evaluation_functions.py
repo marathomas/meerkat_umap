@@ -357,7 +357,7 @@ class nn:
     def get_ownclass_Snorm(self):
         return np.diagonal(self.statstabnorm)
     
-    def plot_heat_S(self,vmin=0, vmax=100, center=50, cmap='YlOrRd', cbar=None, outname=None):
+    def plot_heat_S(self,vmin=0, vmax=100, center=50, cmap=sns.color_palette("Greens", as_cmap=True), cbar=None, outname=None):
         plt.figure(figsize=(6,6))
         ax=sns.heatmap(self.statstab, annot=True, vmin=vmin, vmax=vmax, center=center, cmap=cmap, cbar=cbar, annot_kws={"size":14})
         plt.xlabel("neighbor label")
@@ -366,7 +366,7 @@ class nn:
         if outname:
             plt.savefig(outname, facecolor="white")
 
-    def plot_heat_Snorm(self,vmin=-13, vmax=13, center=1, cmap='YlOrRd', cbar=None, outname=None):
+    def plot_heat_Snorm(self,vmin=-13, vmax=13, center=0, cmap=sns.diverging_palette(20, 145, as_cmap=True), cbar=None, outname=None):
         plt.figure(figsize=(6,6))
         ax=sns.heatmap(self.statstabnorm, annot=True, vmin=vmin, vmax=vmax, center=center, cmap=cmap, cbar=cbar, annot_kws={"size":14})
         plt.xlabel("neighbor label")
@@ -375,7 +375,7 @@ class nn:
         if outname:
             plt.savefig(outname, facecolor="white")
     
-    def plot_heat_fold(self, center=1, cmap='YlOrRd', cbar=None, outname=None):
+    def plot_heat_fold(self, center=1, cmap=sns.diverging_palette(20, 145, as_cmap=True), cbar=None, outname=None):
         plt.figure(figsize=(6,6))
         ax=sns.heatmap(np.power(2,self.statstabnorm), annot=True, center=center, cmap=cmap, cbar=cbar, annot_kws={"size":14})
         plt.xlabel("neighbor label")
