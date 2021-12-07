@@ -363,10 +363,11 @@ class nn:
         plt.xlabel("neighbor label")
         plt.ylabel("datapoint label")
         plt.title("Nearest Neighbor Frequency P")
+        ax.axhline(y=len(set(self.labels)), color="black")
         if outname:
             plt.savefig(outname, facecolor="white")
 
-    def plot_heat_Snorm(self,vmin=-13, vmax=13, center=0, cmap=sns.diverging_palette(20, 145, as_cmap=True), cbar=None, outname=None):
+    def plot_heat_Snorm(self,vmin=-13, vmax=13, center=0, cmap=sns.diverging_palette(h_neg=275,s=80,l=55, h_pos=150, as_cmap=True), cbar=None, outname=None):
         plt.figure(figsize=(6,6))
         ax=sns.heatmap(self.statstabnorm, annot=True, vmin=vmin, vmax=vmax, center=center, cmap=cmap, cbar=cbar, annot_kws={"size":14})
         plt.xlabel("neighbor label")
@@ -375,7 +376,7 @@ class nn:
         if outname:
             plt.savefig(outname, facecolor="white")
     
-    def plot_heat_fold(self, center=1, cmap=sns.diverging_palette(20, 145, as_cmap=True), cbar=None, outname=None):
+    def plot_heat_fold(self, center=1, cmap=sns.diverging_palette(h_neg=275,s=80,l=55, h_pos=150, as_cmap=True), cbar=None, outname=None):
         plt.figure(figsize=(6,6))
         ax=sns.heatmap(np.power(2,self.statstabnorm), annot=True, center=center, cmap=cmap, cbar=cbar, annot_kws={"size":14})
         plt.xlabel("neighbor label")
@@ -564,10 +565,10 @@ def plot_within_without(embedding,labels, distance_metric = "euclidean", outname
         plt.vlines(x=np.mean(self_dists[calltype]),ymin=0,ymax=0.5,color='green', linestyles='dotted')
 
         n, bins, patches = plt.hist(x=other_dists[calltype], label="between", density=True,
-                                  bins=np.linspace(xmin, xmax, nbins), color='red',
+                                  bins=np.linspace(xmin, xmax, nbins), color='purple',
                                   alpha=0.5, rwidth=0.85)
 
-        plt.vlines(x=np.mean(other_dists[calltype]),ymin=0,ymax=0.5,color='red', linestyles='dotted')
+        plt.vlines(x=np.mean(other_dists[calltype]),ymin=0,ymax=0.5,color='purple', linestyles='dotted')
         plt.legend()
         plt.grid(axis='y', alpha=0.75)
         plt.title(calltype)
